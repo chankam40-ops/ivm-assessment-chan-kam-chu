@@ -21,6 +21,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts() {
         // [TODO 1]: here
+        _db.products;
         throw new NotImplementedException();
     }
 
