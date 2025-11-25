@@ -21,6 +21,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts() {
         // [TODO 1]: here
+        _db.products;
         throw new NotImplementedException();
     }
 
@@ -38,6 +39,25 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<PurchaseResponse>> Purchase([FromBody] PurchaseRequest? request) {
         Thread.Sleep(5000);
         // [TODO 2,3]: here
+        if (request == null)
+        {
+            throw new NotImplementedException("400 Bad Request");
+        }
+        bool bFound = false;
+        foreach (var product_tar in _db.Products)
+        {
+            var productToUpdate = await _db.Products.FindAsync(product_tar);
+            if (product_tar.Id == request.ProductId)
+            {
+                productToUpdate.Stock--;
+                await _db.SaveChangesAsync();
+                bFound = true;
+            }
+        }
+        if (!bFound)
+        {
+            throw new NotImplementedException("404");
+        }
         throw new NotImplementedException();
     }
 
