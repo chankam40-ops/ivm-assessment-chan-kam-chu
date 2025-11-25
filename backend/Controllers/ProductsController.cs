@@ -21,6 +21,7 @@ public class ProductsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetProducts() {
         // [TODO 1]: here
+        return _db.Products;
         throw new NotImplementedException();
     }
 
@@ -38,6 +39,49 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<PurchaseResponse>> Purchase([FromBody] PurchaseRequest? request) {
         Thread.Sleep(5000);
         // [TODO 2,3]: here
+        if (request == null)
+        {
+            throw new NotImplementedException("400 Bad Request");
+        }
+        bool bFound = false;
+        bool bOutOfStock = false;
+        var Ret_Purchase = new PurchaseResponse();
+        foreach (var product_tar in _db.Products)
+        {
+            //var productToUpdate = await _db.Products.FindAsync(index);
+            if (product_tar.Id == request.ProductId)
+            {
+                if (product_tar.Stock < request.Quantity)
+                {
+                    bOutOfStock = true;
+                    break;
+                }
+                var Purchases_new = new Purchase();
+                Purchases_new.ProductId = product_tar.Id;
+                Purchases_new.ProductName = product_tar.Name;
+                Purchases_new.Quantity = request.Quantity;
+                Purchases_new.Amount = request.Quantity * product_tar.Price;
+                Purchases_new.MachineId = "MC_001";
+                product_tar.Stock -= Purchases_new.Quantity;
+                Ret_Purchase.TotalCost = Purchases_new.Amount;
+                Ret_Purchase.QuantityPurchased = Purchases_new.Quantity;
+                Ret_Purchase.Remaining = product_tar.Stock;
+                _db.Purchases.Add(Purchases_new);
+                bFound = true;
+                break;
+            }
+        }
+        if (!bFound)
+        {
+            throw new NotImplementedException("404 Not Found with proper message");
+        }
+        if (bOutOfStock)
+        {
+            throw new NotImplementedException("400 Bad Request with proper message");
+        }
+        await _db.SaveChangesAsync();
+        Ret_Purchase.Success = true;
+        return Ret_Purchase;
         throw new NotImplementedException();
     }
 
@@ -49,6 +93,7 @@ public class ProductsController : ControllerBase
     public async Task<ActionResult<IEnumerable<Purchase>>> GetPurchases([FromQuery] PurchaseFilterParams? filter)
     { 
         // [TODO 4,5]: here
+        return _db.Purchases
         throw new NotImplementedException();
     }
 
