@@ -62,8 +62,8 @@ export default function ProductsPage(){
     setMessage('');
 
     // [TODO 1]: Check insufficient balance before purchase
-    // Get the quantity for this product: const quantity = quantities[productId] || 1
-    // Calculate cost: const cost = product.price * quantity
+    const quantity = quantities[productId] || 1
+    const cost = product.price * quantity
     // Add checking if conditions with proper error messages:
     // 1. balance === null -> return and show error "❌ Please start the machine first"
     // 2. balance < cost -> return and show error "❌ Insufficient funds! You have $X.XX but need $Y.YY"
@@ -72,6 +72,23 @@ export default function ProductsPage(){
     // 5. quantity is 0 or invalid -> return and show error
     // All the failed cases and success purchase cases will be tested
 
+    if (balance === null)
+    {
+      setMessage(`❌ Please start the machine first`);
+      return;
+    }
+
+    if (balance < cost)
+    {
+      setMessage(`❌ Insufficient funds! You have $X.XX but need $Y.YY`);
+      return;
+    }
+
+    if (product.stock < quantity)
+    {
+      return;
+    }
+    
     try {
       // [TODO 1]: Get quantity from state and send it in the request
       // const quantity = quantities[productId] || 1;
@@ -83,6 +100,9 @@ export default function ProductsPage(){
         // 1. Reload products using loadProducts() to get updated stock
         // 2. Update balance: setBalance(balance - res.data.totalCost) to deduct purchase cost
         // 3. Reset quantity for this product: setQuantities({...quantities, [productId]: 1})
+        loadProducts();
+        setBalance(balance - res.data.totalCost);
+        setQuantities({...quantities, [productId]: 1});
       } else {
         setMessage(`❌ Purchase failed: ${res.data.message || 'Purchase failed'}`);
       }
@@ -98,6 +118,9 @@ export default function ProductsPage(){
 
   function updateQuantity(productId: string, newQty: number) {
     // [TODO 1]: Find Correct Product and Update Quantity
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+    setQuantities({...quantities, [productId]: newQty});
   }
 
   return (
