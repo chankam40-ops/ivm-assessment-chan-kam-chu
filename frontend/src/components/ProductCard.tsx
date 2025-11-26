@@ -104,7 +104,9 @@ export default function ProductCard({
           disabled={balance === null}
           className={`w-full py-4 px-6 rounded-2xl font-black text-lg transition-all duration-300 shadow-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 text-white hover:shadow-2xl hover:scale-105 active:scale-95}`}
         >
-          {balance === null ? '🔒 Start Machine' :'🛒 Buy Now'}
+          {
+            isPurchasing ? '⏳ Processing...' : product.stock === 0 ? '❌ Out of Stock' : balance === null ? '🔒 Start Machine' :'🛒 Buy Now'
+          }
         </button>
       </div>
     </div>
