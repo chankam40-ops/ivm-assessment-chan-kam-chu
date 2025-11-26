@@ -23,11 +23,21 @@ export default function PurchaseHistoryTable({ purchases, formatDate }: Purchase
         <table className="w-full">
           <thead className="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600">
             <tr>
-              {/* [TODO 4]: add table headers for product, amount, time */}
+              {/* [TODO 4]: add table headers for product, amount, time */
+              <><th>Product</th><th>Amount</th><th>Time</th></>
+              }
             </tr>
           </thead>
           <tbody className="divide-y-2 divide-gray-100">
-            {/* [TODO 4]: add table rows for product, amount, time */}
+            {/* [TODO 4]: add table rows for product, amount, time */
+            purchases.map((item) => (
+              <tr key={item.id}> {/* Use a unique key for each row */}
+                <td>{item.productName}</td>
+                <td>{item.amount}</td>
+                <td>{item.purchaseTime}</td>
+              </tr>
+            ))
+            }
           </tbody>
         </table>
       </div>
