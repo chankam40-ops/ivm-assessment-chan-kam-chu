@@ -72,6 +72,7 @@ export default function PurchasePage(){
 
     if (searchProduct) {
       // [TODO 4]: client side filter by search product
+      filtered = filtered.filter(item => item.productName === searchProduct);
     }
 
     return filtered;
